@@ -2,7 +2,7 @@
   "id": "canvas-paste-link",
   "name": "Canvas Paste Link as Text",
   "version": "1.0.0",
-  "minAppVersion": "1.0.0",
+  "minAppVersion": "1.12.4",
   "description": "Automatically fetches webpage titles and pastes them as markdown text nodes in Canvas, bypassing the default webpage embed.",
   "author": "@rheactdev",
   "authorUrl": "https://github.com/rheactdev",
