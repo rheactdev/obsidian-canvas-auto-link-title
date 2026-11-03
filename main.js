@@ -7,6 +7,8 @@ class CanvasAutoLinkPlugin extends obsidian.Plugin {
 	async onload() {
 		// We use { capture: true } to intercept the paste BEFORE Obsidian's core canvas code gets it
 		this.registerDomEvent(document, 'paste', async (evt) => {
+			if (evt.defaultPrevented) return;
+
 			var _a;
 			const clipboardText = (_a = evt.clipboardData) === null || _a === void 0 ? void 0 : _a.getData('text');
 			
@@ -21,7 +23,22 @@ class CanvasAutoLinkPlugin extends obsidian.Plugin {
 				return; // Not in a canvas, do nothing
 			}
 
-			// 3. We are in a Canvas AND pasting a URL. Hijack the paste!
+			// Match the native Canvas paste guards and leave unsupported versions alone.
+			const canvas = activeView.canvas;
+			if (!canvas || canvas.readonly || !canvas.wrapperEl ||
+				canvas.canvasEl?.doc?.activeElement !== canvas.wrapperEl ||
+				typeof canvas.posCenter !== 'function' ||
+				typeof canvas.createTextNode !== 'function' ||
+				typeof canvas.requestSave !== 'function') {
+				return;
+			}
+
+			// Snapshot the native paste position before the title request can delay us.
+			const center = canvas.posCenter();
+			if (!center || !Number.isFinite(center.x) || !Number.isFinite(center.y)) return;
+			const pos = { x: center.x, y: center.y };
+
+			// 3. We are on the editable Canvas background and pasting a URL.
 			evt.preventDefault();
 			evt.stopPropagation();
 
@@ -47,17 +64,10 @@ class CanvasAutoLinkPlugin extends obsidian.Plugin {
 				new obsidian.Notice("Couldn't fetch title, using fallback.");
 			}
 
-			// 5. Access the hidden canvas API
-			const canvas = activeView.canvas;
-			if (!canvas) return;
-
-			// 6. Figure out where the mouse is
-			const x = canvas.mousePos ? canvas.mousePos.x : 0;
-			const y = canvas.mousePos ? canvas.mousePos.y : 0;
-
-			// 7. Create the actual text node
+			// 5. Center the text node where Obsidian would have pasted it.
 			canvas.createTextNode({
-				pos: { x: x, y: y },
+				pos,
+				position: 'center',
 				text: `[${title}](${url})`,
 				size: { width: 300, height: 60 }
 			});

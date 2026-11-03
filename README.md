@@ -7,13 +7,13 @@ By default, pasting a raw URL onto a Canvas background forces Obsidian to create
 ## ✨ Features
 * **Bypasses Canvas Embeds:** Stops Obsidian from automatically creating iframe cards when pasting URLs.
 * **Auto-Fetches Titles:** Reaches out to the pasted URL and scrapes the HTML `<title>` tag so you don't have to type it manually.
-* **Instant Text Nodes:** Automatically spawns a text node right at your mouse cursor containing your formatted Markdown link.
+* **Native Paste Placement:** Creates your formatted Markdown link in a text node centered in the current Canvas view, matching Obsidian's normal paste position.
 
 ## 🚀 Usage
 1. Copy any standard URL from your browser (e.g., `https://obsidian.md`).
 2. Open an Obsidian Canvas.
 3. Paste (`Ctrl+V` or `Cmd+V`) directly onto the empty Canvas background.
-4. The plugin will display a "Fetching website title..." notice and instantly create your text node.
+4. The plugin will display a "Fetching website title..." notice, then create your text node at the center of the view as it was when you pasted.
 
 ## 🛠️ Manual Installation
 1. Open your Obsidian vault folder on your computer.
